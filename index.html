@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
     
     <title>XSS</title>
 
@@ -93,7 +94,7 @@
         userName = "applicant";
 
         if (userParam !== null) {
-            userName = userParam;
+            userName = DOMPurify.sanitize(userParam);
         }
 
         document.getElementById("welcome-text").innerHTML = "<h1>How do you do, " + userName + "?</h1>";
@@ -106,7 +107,7 @@
         input.addEventListener("input", updateValue);
 
         function updateValue(e) {
-            log.innerHTML = e.target.value;
+            log.innerText = e.target.value;
         }
 
         //  XSS vulnerability #3
@@ -118,14 +119,14 @@
         showButton.addEventListener("click", showHTML);
 
         function showHTML() {
-            htmlOutput.innerHTML = htmlInput.value;
+            htmlOutput.innerText = htmlInput.value;
         }
 
         //  XSS vulnerability #4
 
         const redir = params.get("goto");
         if (redir !== null && redir !== "null") {
-            document.location = redir;
+            document.location = DOMPurify.sanitize(redir);
         }
 
     </script>
